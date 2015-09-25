@@ -21,6 +21,8 @@ module ApiTest
 
     config.active_record.raise_in_transactional_callbacks = true
 
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
+
     config.generators.stylesheets = false
     config.generators.javascripts = false
     config.generators.helper      = false
