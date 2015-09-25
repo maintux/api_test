@@ -1,3 +1,4 @@
+requirements.txt
 *.rbc
 capybara-*.html
 .rspec
