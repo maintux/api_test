@@ -13,6 +13,8 @@ class User < ActiveRecord::Base
 
   before_validation :generate_api_key, on: :create
 
+  has_many :albums, foreign_key: :owner_id, dependent: :destroy
+
   # Define helper methods for user role
   # This make three metods:
   # 1. admin?
