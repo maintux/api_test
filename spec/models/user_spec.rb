@@ -9,7 +9,7 @@ describe User, type: :model do
   it "Creates user with an api_key" do
     user = FactoryGirl.create :user, role: 'admin'
     expect(user).not_to be_a_new(User)
-    expect(user.admin?).to be_truthy
+    expect(user.is_admin?).to be_truthy
     expect(user.api_key).not_to be_nil
   end
 

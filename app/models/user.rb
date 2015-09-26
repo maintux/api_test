@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   validates_presence_of :password, :password_confirmation, on: :create
   validates_confirmation_of :password
   validates_inclusion_of :role, in: ROLES
+  validates_uniqueness_of :email
 
   attr_readonly :api_key, :email
 
@@ -18,7 +19,7 @@ class User < ActiveRecord::Base
   # 2. user?
   # 3. guest?
   ROLES.each do |_role|
-    define_method "#{_role}?" do
+    define_method "is_#{_role}?" do
       self.role.eql? _role
     end
   end
