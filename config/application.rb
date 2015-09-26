@@ -26,5 +26,6 @@ module ApiTest
     config.generators.stylesheets = false
     config.generators.javascripts = false
     config.generators.helper      = false
+    ActiveSupport::JSON::Encoding.time_precision = 0
   end
 end
