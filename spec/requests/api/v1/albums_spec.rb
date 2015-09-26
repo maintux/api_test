@@ -17,7 +17,7 @@ describe "Api Albums", type: :request do
     Album.destroy_all
   end
 
-  describe "GET /albums" do
+  describe "GET /api/v1/albums" do
 
     it "Must send Accept header" do
       expect { get api_albums_path }.to raise_error(ActionController::RoutingError)
@@ -51,7 +51,7 @@ describe "Api Albums", type: :request do
 
   end
 
-  describe "POST /albums" do
+  describe "POST /api/v1/albums" do
 
     it "Prevent create album for guest" do
       album = FactoryGirl.build :album
@@ -68,9 +68,36 @@ describe "Api Albums", type: :request do
       expect(response.body).to eq(hash)
     end
 
+    it "Ensure admin can create albums" do
+      album = FactoryGirl.build :album
+      post api_albums_path, make_http_params_from(album), auth_headers_for(@admin)
+      expect(response).to have_http_status(200)
+      hash = Album.last.attributes.reject{|k,v| k.eql?"owner_id"}.merge({"owner" => @admin.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}}).to_json
+      expect(response.body).to eq(hash)
+    end
+
   end
 
-  describe "PATCH /album/:id" do
+  describe "GET /api/v1/albums/:id" do
+
+    it "Ensure user can modify only his albums" do
+      album = FactoryGirl.create :album, owner_id: @user.id
+      old_title = album.title
+      patch api_album_path(album), {album: {title: "My new title"}}, auth_headers_for(@second_user)
+      expect(response).to have_http_status(401)
+      album.reload
+      expect(album.title).to eq(old_title)
+      expect(response.body).to eq({error: "Unauthorized", status: 401}.to_json)
+      patch api_album_path(album), {album: {title: "My new title"}}, auth_headers_for(@user)
+      expect(response).to have_http_status(200)
+      album.reload
+      expect(album.title).to eq("My new title")
+      hash = Album.last.attributes.reject{|k,v| k.eql?"owner_id"}.merge({"owner" => @user.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}}).to_json
+      expect(response.body).to eq(hash)
+    end
+  end
+
+  describe "PATCH /api/v1/albums/:id" do
 
     it "Ensure user can modify only his albums" do
       album = FactoryGirl.create :album, owner_id: @user.id
@@ -100,7 +127,7 @@ describe "Api Albums", type: :request do
 
   end
 
-  describe "DELETE /album/:id" do
+  describe "DELETE /api/v1/albums/:id" do
 
     it "Ensure user can delete only his albums" do
       album = FactoryGirl.create :album, owner_id: @user.id

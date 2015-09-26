@@ -7,9 +7,10 @@ end
 
 def make_http_params_from(obj)
   params = {}
-  params[obj.class.to_s.downcase] = {}
+  key = obj.class.to_s.underscore.gsub('/','_')
+  params[key] = {}
   obj.attributes.each do |k,v|
-    params[obj.class.to_s.downcase][k] = v unless v.nil?
+    params[key][k] = v unless v.nil?
   end
   params
 end
