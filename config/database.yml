@@ -1,20 +1,16 @@
 default: &default
-  adapter: mysql2
-  encoding: utf8
+  adapter: sqlite3
   pool: 5
-  username: api_test
-  password: api_test
-  socket: /tmp/mysql.sock
+  timeout: 5000
 
 development:
   <<: *default
-  database: api_test_development
+  database: db/development.sqlite3
 
 test:
   <<: *default
-  database: api_test_test
+  database: db/test.sqlite3
 
 production:
   <<: *default
-  database: api_test_production
-  password: <%= ENV['API_TEST_DATABASE_PASSWORD'] %>
+  database: db/production.sqlite3
