@@ -3,11 +3,15 @@
     = f.label :title, class: 'control-label'
     .controls
       = f.text_field :title, class: 'form-control', required: true
-    = error_span(@album[:title])
+    - if has_errors?(f.object, :title)
+      %p.text-danger
+        = get_errors_for(f.object, :title)
   .form-group
     = f.label :description, class: 'control-label'
     .controls
-      = f.text_area :description, class: 'form-control', required: true
-    = error_span(@album[:description])
+      = f.text_area :description, class: 'form-control'
+    - if has_errors?(f.object, :description)
+      %p.text-danger
+        = get_errors_for(f.object, :description)
   = f.submit nil,class: 'btn btn-primary'
   = link_to t('.cancel', default: t("helpers.links.cancel")), albums_path, class: 'btn btn-default'

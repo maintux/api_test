@@ -1,4 +1,7 @@
 json.array!(@albums) do |album|
-  json.extract! album, :id, :title, :description, :owner_id
-  json.url album_url(album, format: :json)
+  json.extract! album, :id, :title, :description
+  json.owner do
+    json.extract! album.owner, :id, :name, :surname, :email
+  end
+  json.url album_url(album)
 end

@@ -11,6 +11,10 @@ class AlbumsController < ApplicationController
   # GET /albums/1
   # GET /albums/1.json
   def show
+    respond_to do |format|
+      format.html { redirect_to album_multimedia_files_path(@album) }
+      format.json { render :show }
+    end
   end
 
   # GET /albums/new

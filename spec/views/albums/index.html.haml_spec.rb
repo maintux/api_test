@@ -2,8 +2,9 @@ require 'rails_helper'
 
 RSpec.describe "albums/index", type: :view do
   before(:each) do
-    @album1 = FactoryGirl.create(:album, owner_id: 1)
-    @album2 = FactoryGirl.create(:album, owner_id: 1)
+    @owner = FactoryGirl.create(:user, role: 'admin')
+    @album1 = FactoryGirl.create(:album, owner_id: @owner.id)
+    @album2 = FactoryGirl.create(:album, owner_id: @owner.id)
     assign(:albums, [@album1, @album2])
   end
 
@@ -11,9 +12,9 @@ RSpec.describe "albums/index", type: :view do
     render
     assert_select "tr:first-child>td", text: @album1.title, count: 1
     assert_select "tr:first-child>td", text:  @album1.description, count: 1
-    assert_select "tr:first-child>td", text: @album1.owner_id.to_s, count: 1
+    assert_select "tr:first-child>td", text: @owner.full_name, count: 1
     assert_select "tr:last-child>td", text: @album2.title, count: 1
     assert_select "tr:last-child>td", text:  @album2.description, count: 1
-    assert_select "tr:last-child>td", text: @album2.owner_id.to_s, count: 1
+    assert_select "tr:last-child>td", text: @owner.full_name, count: 1
   end
 end

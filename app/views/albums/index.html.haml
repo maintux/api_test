@@ -14,11 +14,12 @@
     - @albums.each do |album|
       %tr
         %td= link_to album.id, album_path(album)
-        %td= album.title
+        %td= link_to album.title, album_path(album)
         %td= album.description
-        %td= album.owner_id
-        %td=l album.created_at
+        %td= album.owner.full_name
+        %td= l album.created_at, format: :short
         %td
+          = link_to t('.show', :default => t("helpers.links.show")), album_path(album), :class => 'btn btn-info btn-xs'
           = link_to t('.edit', :default => t("helpers.links.edit")), edit_album_path(album), :class => 'btn btn-default btn-xs'
           = link_to t('.destroy', :default => t("helpers.links.destroy")), album_path(album), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
