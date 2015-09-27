@@ -1,7 +1,10 @@
 require 'api_constraints'
 Rails.application.routes.draw do
 
-  resources :albums
+  resources :multimedia_files
+  resources :albums do
+    resources :multimedia_files, only: [:index]
+  end
 
   # Example of curl calls
   # curl http://localhost:3111/api/ping -H 'Accept: application/vnd.api_test; version=1'
@@ -9,7 +12,10 @@ Rails.application.routes.draw do
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1, default: false) do
       get "ping" => "base#ping"
-      resources :albums, except: [:new, :edit]
+      resources :albums, except: [:new, :edit] do
+        resources :multimedia_files, only: [:index]
+      end
+      resources :multimedia_files, except: [:new, :edit]
     end
   end
 

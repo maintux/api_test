@@ -1,0 +1,50 @@
+.page-header
+  - if @album
+    %h1= "Album: #{@album.title}"
+  - else
+    %h1 Multimedia Files
+
+  .multimedia-files
+    - @multimedia_files.each do |multimedia_file|
+      .multimedia-file
+        - if multimedia_file.type.eql?"video"
+          .video-thumb{data: {title: multimedia_file.title, url: multimedia_file.url, id: multimedia_file.video_id, provider: multimedia_file.provider}}
+        .multimedia-file-overlay
+        .multimedia-file-links
+          = link_to edit_multimedia_file_path(multimedia_file, type: multimedia_file.type) do
+            %span.glyphicon.glyphicon-pencil{aria: {hidden: "true"}}
+            =t('.destroy', default: t("helpers.links.edit"))
+          = link_to multimedia_file_path(multimedia_file, type: multimedia_file.type), class: "delete-link", method: :delete, data: {confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?'))} do
+            %span.glyphicon.glyphicon-trash{aria: {hidden: "true"}}
+            =t('.destroy', default: t("helpers.links.destroy"))
+
+= link_to t('.new', :default => t("helpers.links.new")), '#', :class => 'btn btn-primary', data: {toggle: "modal", target: "#new-multimedia-file-dialog"}
+
+= link_to '--', '#', style: "display: none;", data: {toggle: "modal", target: "#show-multimedia-file-dialog"}
+
+#new-multimedia-file-dialog.modal.fade{tabindex: "-1", role: "dialog", aria: {labelledby: "new-multimedia-file-dialog-label"}}
+  .modal-dialog{role: "document"}
+    .modal-content
+      .modal-header
+        %button.close{type: "button", data: {dismiss: "modal"}, aria: {label: "Close"}}
+          %span{aria: {hidden: "true"}} &times;
+        %h4.modal-title#new-multimedia-file-dialog-label Choose the multimedia type
+      .modal-body
+        .row
+          .col-sm-6
+            = link_to new_multimedia_file_path(type: 'video', album_id: @album.try(:id)), class: "btn btn-info" do
+              %span.glyphicon.glyphicon-film{aria: {hidden: "true"}}
+              New Video
+          .col-sm-6
+            = link_to new_multimedia_file_path(type: 'image', album_id: @album.try(:id)), class: "btn btn-info" do
+              %span.glyphicon.glyphicon-picture{aria: {hidden: "true"}}
+              New Image
+
+#show-multimedia-file-dialog.modal.fade{tabindex: "-1", role: "dialog", aria: {labelledby: "show-multimedia-file-dialog-label"}}
+  .modal-dialog{role: "document"}
+    .modal-content
+      .modal-header
+        %button.close{type: "button", data: {dismiss: "modal"}, aria: {label: "Close"}}
+          %span{aria: {hidden: "true"}} &times;
+        %h4.modal-title#show-multimedia-file-dialog-label
+      .modal-body{style: "text-align: center"}

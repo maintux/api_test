@@ -14,6 +14,10 @@ class User < ActiveRecord::Base
   before_validation :generate_api_key, on: :create
 
   has_many :albums, foreign_key: :owner_id, dependent: :destroy
+  has_many :videos, foreign_key: :owner_id, dependent: :destroy, class_name: "MultimediaFile::Video"
+
+  @extra_multimedia_files_options = {foreign_key: :owner_id}
+  include MultimediaFileConcern
 
   # Define helper methods for user role
   # This make three metods:
