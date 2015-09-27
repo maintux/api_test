@@ -14,3 +14,14 @@
  *= require_tree .
  *= require_self
  */
+
+.field_with_errors ~ .text-danger{
+  margin-bottom: 0;
+}
+.field_with_errors .form-control{
+  border-color: #a94442;
+}
+.field_with_errors .form-control:focus{
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(169, 68, 66, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(169, 68, 66, 0.6);
+}
