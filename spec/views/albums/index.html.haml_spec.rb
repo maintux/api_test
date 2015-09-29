@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe "albums/index", type: :view do
   before(:each) do
     @owner = FactoryGirl.create(:user, role: 'admin')
+    allow(view).to receive(:current_user).and_return(@owner)
     @album1 = FactoryGirl.create(:album, owner_id: @owner.id)
     @album2 = FactoryGirl.create(:album, owner_id: @owner.id)
     assign(:albums, [@album1, @album2])
