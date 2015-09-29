@@ -12,6 +12,7 @@ gem 'puma'
 gem 'twitter-bootstrap-rails'
 gem 'haml-rails'
 gem 'devise'
+gem 'paperclip'
 
 group :development, :test do
   gem 'database_cleaner'

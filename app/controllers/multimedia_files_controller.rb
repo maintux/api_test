@@ -32,7 +32,7 @@ class MultimediaFilesController < ApplicationController
   # GET /multimedia_files/new
   def new
     redirect_to multimedia_files_path and return if current_user.is_guest?
-    @multimedia_file = MultimediaFile::Video.new
+    @multimedia_file = @klass.new
     if params[:album_id] and album = @albums.find_by_id(params[:album_id])
       @multimedia_file.album = album
     end
@@ -46,6 +46,10 @@ class MultimediaFilesController < ApplicationController
   # POST /multimedia_files
   # POST /multimedia_files.json
   def create
+    if params[:type].eql? 'image'
+      sleep 2
+      head 204 and return
+    end
     redirect_to multimedia_files_path and return if current_user.is_guest?
 
     @multimedia_file = @klass.new(multimedia_file_params)
@@ -93,9 +97,9 @@ class MultimediaFilesController < ApplicationController
   private
 
     def check_type
-      request_error and return if params[:type].nil?
+      head 422 and return if params[:type].nil?
       @klass = "multimedia_file/#{params[:type]}".classify.constantize rescue nil
-      request_error and return if @klass.nil?
+      head 422 and return if @klass.nil?
     end
 
     # Use callbacks to share common setup or constraints between actions.

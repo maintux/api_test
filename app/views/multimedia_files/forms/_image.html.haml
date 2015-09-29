@@ -1,0 +1,54 @@
+.uploader
+  #media-select-uploader-dropzone
+    #media-upload-photo{style: "min-height: 100px;"}
+      .media-upload-first-step
+        %div{style: "height:100%;width:1px;"}
+        %div
+          %h3 Drag your file here to upload
+          %p
+            %button#media-select-uploader-link.btn.btn-warning{style: "margin: 20px 0;"} Select images
+          %p
+            = "Allowed format: <strong>jpg, gif, png, jpeg</strong>.".html_safe
+          %p
+            = "Maximum size for every file: <strong>8mb</strong>.".html_safe
+          %p
+            = "By uploading these files you declare to have to right to publish these<br/>pictures and that these pictures don't violate the terms and conditions".html_safe
+      .media-upload-second-step{style: "display:none"}
+        .upload_form_container
+          - multipart_params = {}
+          - multipart_params[request_forgery_protection_token] = form_authenticity_token
+          - multipart_params[Rails.application.config.session_options[:key]] = request.session_options[:id]
+          = form_for @multimedia_file, url: multimedia_files_path, html: {multipart: true, class: "media-select-uploader-form form", data: {multipartParams: multipart_params.to_json}} do |f|
+            = hidden_field_tag "type", "image"
+            .form-group
+              = f.label :album_id, class: 'control-label'
+              .controls
+                = f.select :album_id, options_for_select(@albums.collect{|a| [a[:title], a[:id]]}, @multimedia_file.album_id), {include_blank: false}, class: 'form-control'
+            .form-group
+              = f.label :description, class: 'control-label'
+              .controls
+                = f.text_area :description, class: 'form-control'
+        .upload_queue_container
+          %ul.media-upload-collection
+            %li#uploader-add-more
+              #uploader-add-more-link
+                %span.glyphicon.glyphicon-plus
+      .media-select-tab-footer{style: "display: none;"}
+        %span#selected_count{style: "display: none;"}
+        |
+        = link_to "Empty queue", '#', id: "empty-queue-link", style: "z-index: 1;position: relative;"
+        .progress.progress-striped
+          .bar
+        %span
+          %button#upload-image-button.btn.btn-warning Upload files
+      #drag-notify
+        %h2 Drop files here!
+
+
+
+%script{type: "text/html", id: "tmpl-uploader-multimedia-file"}
+  %li.multimedia-file{"data-item"=>"{{ data.id }}"}
+    %a.media-queue-remove-icon{href: "#"}
+      %span.glyphicon.glyphicon-remove
+    %img{src: ""}
+    .media-queue-overlay

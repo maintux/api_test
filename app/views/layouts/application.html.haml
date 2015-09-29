@@ -17,7 +17,8 @@
     = favicon_link_tag 'apple-touch-icon-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png'
     = favicon_link_tag 'favicon.ico', :rel => 'shortcut icon'
     = javascript_include_tag "application"
-
+    = javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"
+    = javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/plupload/2.1.7/plupload.full.min.js"
 
   %body{data: {controller: controller.class.to_s.underscore, action: params[:action]}}
     .navbar.navbar-default.navbar-static-top
