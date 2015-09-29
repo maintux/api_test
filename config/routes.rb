@@ -20,6 +20,10 @@ Rails.application.routes.draw do
   end
 
   devise_for :users, path_names: { sign_in: 'login', sign_out: 'logout'}
+  resources :users, except: [:show]
+  controller :users do
+    get :profile, action: :edit
+  end
 
   root to: "albums#index"
 

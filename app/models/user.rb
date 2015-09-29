@@ -3,9 +3,8 @@ class User < ActiveRecord::Base
 
   devise :database_authenticatable, :recoverable, :rememberable, :validatable
 
-  validates_presence_of :email, :name, :surname, :role, :api_key
-  validates_presence_of :password, :password_confirmation, on: :create
-  validates_confirmation_of :password
+  validates_presence_of :name, :surname, :role, :api_key
+
   validates_inclusion_of :role, in: ROLES
   validates_uniqueness_of :email
 

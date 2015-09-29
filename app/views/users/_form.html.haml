@@ -1,0 +1,55 @@
+= form_for @user, html: { class: "form form-horizontal user" } do |f|
+  .form-group
+    = f.label :name, class: 'control-label'
+    .controls
+      = f.text_field :name, class: 'form-control', required: true
+    - if has_errors?(f.object, :name)
+      %p.text-danger
+        = get_errors_for(f.object, :name)
+  .form-group
+    = f.label :surname, class: 'control-label'
+    .controls
+      = f.text_field :surname, class: 'form-control', required: true
+    - if has_errors?(f.object, :surname)
+      %p.text-danger
+        = get_errors_for(f.object, :surname)
+  .form-group
+    = f.label :email, class: 'control-label'
+    .controls
+      = f.text_field :email, class: 'form-control', required: true, disabled: @user.persisted?
+    - if has_errors?(f.object, :email)
+      %p.text-danger
+        = get_errors_for(f.object, :email)
+  .form-group
+    = f.label :role, class: 'control-label'
+    .controls
+      = f.select :role, options_for_select(User::ROLES, @user.role), {}, class: 'form-control', required: true, disabled: @user.eql?(current_user)
+    - if has_errors?(f.object, :role)
+      %p.text-danger
+        = get_errors_for(f.object, :role)
+  - if @user.persisted?
+    .form-group
+      = f.label :api_key, class: 'control-label'
+      .controls
+        = f.text_field :api_key, class: 'form-control', required: true, disabled: @user.persisted?
+      - if has_errors?(f.object, :api_key)
+        %p.text-danger
+          = get_errors_for(f.object, :api_key)
+  - if current_user.eql?(@user) or current_user.is_admin?
+    .form-group
+      = f.label :password, class: 'control-label'
+      .controls
+        = f.password_field :password, class: 'form-control', required: @user.new_record?
+      - if has_errors?(f.object, :password)
+        %p.text-danger
+          = get_errors_for(f.object, :password)
+    .form-group
+      = f.label :password_confirmation, class: 'control-label'
+      .controls
+        = f.password_field :password_confirmation, class: 'form-control', required: @user.new_record?
+      - if has_errors?(f.object, :password_confirmation)
+        %p.text-danger
+          = get_errors_for(f.object, :password_confirmation)
+
+  = f.submit nil,class: 'btn btn-primary'
+  = link_to t('.cancel', default: t("helpers.links.cancel")), users_path, class: 'btn btn-default'

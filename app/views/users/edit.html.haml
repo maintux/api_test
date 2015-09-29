@@ -1,0 +1,8 @@
+- model_class = User
+.page-header
+  - if current_user.is_admin?
+    %h1=t '.title', :default => [:'helpers.titles.edit', 'Edit %{model}'], :model => model_class.model_name.human.titleize
+  - else
+    %h1= "Edit profile"
+
+= render :partial => "form"
