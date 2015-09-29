@@ -4,13 +4,20 @@
   - else
     %h1 Multimedia Files
 
-  .multimedia-files
-    - @multimedia_files.each do |multimedia_file|
-      .multimedia-file
-        - if multimedia_file.type.eql?"video"
-          .video-thumb{data: {title: multimedia_file.title, url: multimedia_file.url, id: multimedia_file.video_id, provider: multimedia_file.provider}}
-        .multimedia-file-overlay
-        .multimedia-file-links
+- unless current_user.is_guest?
+  %p
+    = link_to "Your multimedia files", url_for(owner_id: current_user.id)
+    |
+    = link_to "All multimedia files", url_for
+
+.multimedia-files
+  - @multimedia_files.each do |multimedia_file|
+    .multimedia-file
+      - if multimedia_file.type.eql?"video"
+        .video-thumb{data: {title: multimedia_file.title, url: multimedia_file.url, id: multimedia_file.video_id, provider: multimedia_file.provider}}
+      .multimedia-file-overlay
+      .multimedia-file-links
+        - if current_user.is_admin? or (current_user.is_user? and current_user.eql?(album.owner))
           = link_to edit_multimedia_file_path(multimedia_file, type: multimedia_file.type) do
             %span.glyphicon.glyphicon-pencil{aria: {hidden: "true"}}
             =t('.destroy', default: t("helpers.links.edit"))
@@ -18,7 +25,8 @@
             %span.glyphicon.glyphicon-trash{aria: {hidden: "true"}}
             =t('.destroy', default: t("helpers.links.destroy"))
 
-= link_to t('.new', :default => t("helpers.links.new")), '#', :class => 'btn btn-primary', data: {toggle: "modal", target: "#new-multimedia-file-dialog"}
+- unless current_user.is_guest?
+  = link_to t('.new', :default => t("helpers.links.new")), '#', :class => 'btn btn-primary', data: {toggle: "modal", target: "#new-multimedia-file-dialog"}
 
 = link_to '--', '#', style: "display: none;", data: {toggle: "modal", target: "#show-multimedia-file-dialog"}
 

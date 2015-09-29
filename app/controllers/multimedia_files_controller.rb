@@ -8,10 +8,17 @@ class MultimediaFilesController < ApplicationController
   # GET /multimedia_files.json
   def index
     @album = Album.find params[:album_id] rescue nil
+    owner = User.find params[:owner_id] rescue nil
     if @album
-      _proc = proc {|k| "MultimediaFile::#{k}".constantize.where(album_id: params[:album_id]).includes(:album)}
+      hash = {album_id: @album.id}
+      hash[:owner_id] = owner.id if owner
+      _proc = proc {|k| "MultimediaFile::#{k}".constantize.where(hash).includes(:album)}
     else
-      _proc = proc {|k| "MultimediaFile::#{k}".constantize.includes(:album).all}
+      if owner
+        _proc = proc {|k| "MultimediaFile::#{k}".constantize.where(owner_id: owner.id).includes(:album)}
+      else
+        _proc = proc {|k| "MultimediaFile::#{k}".constantize.includes(:album).all}
+      end
     end
     @multimedia_files = MultimediaFileConcern::MUTIMEDIA_FILE_CLASSES.map(&_proc).flatten
   end
@@ -23,6 +30,7 @@ class MultimediaFilesController < ApplicationController
 
   # GET /multimedia_files/new
   def new
+    redirect_to multimedia_files_path and return if current_user.is_guest?
     @multimedia_file = MultimediaFile::Video.new
     if params[:album_id] and album = @albums.find_by_id(params[:album_id])
       @multimedia_file.album = album
@@ -31,11 +39,14 @@ class MultimediaFilesController < ApplicationController
 
   # GET /multimedia_files/1/edit
   def edit
+    redirect_to multimedia_files_path and return if current_user.is_guest?
   end
 
   # POST /multimedia_files
   # POST /multimedia_files.json
   def create
+    redirect_to multimedia_files_path and return if current_user.is_guest?
+
     @multimedia_file = @klass.new(multimedia_file_params)
     @multimedia_file.owner = current_user
 
@@ -53,6 +64,8 @@ class MultimediaFilesController < ApplicationController
   # PATCH/PUT /multimedia_files/1
   # PATCH/PUT /multimedia_files/1.json
   def update
+    redirect_to multimedia_files_path and return if current_user.is_guest? or (current_user.is_user? and not current_user.eql?(@multimedia_file.owner))
+
     respond_to do |format|
       if @multimedia_file.update(multimedia_file_params)
         format.html { redirect_to album_path(@multimedia_file.album), notice: 'MultimediaFile was successfully updated.' }
@@ -67,6 +80,8 @@ class MultimediaFilesController < ApplicationController
   # DELETE /multimedia_files/1
   # DELETE /multimedia_files/1.json
   def destroy
+    redirect_to multimedia_files_path and return if current_user.is_guest? or (current_user.is_user? and not current_user.eql?(@multimedia_file.owner))
+
     @multimedia_file.destroy
     respond_to do |format|
       format.html { redirect_to multimedia_file_videos_url, notice: 'MultimediaFile was successfully destroyed.' }

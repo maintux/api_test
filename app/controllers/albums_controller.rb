@@ -5,7 +5,11 @@ class AlbumsController < ApplicationController
   # GET /albums
   # GET /albums.json
   def index
-    @albums = Album.all
+    if params[:owner_id] and owner = User.find_by_id(params[:owner_id])
+      @albums = owner.albums
+    else
+      @albums = Album.all
+    end
   end
 
   # GET /albums/1
@@ -19,16 +23,22 @@ class AlbumsController < ApplicationController
 
   # GET /albums/new
   def new
+    redirect_to albums_path and return if current_user.is_guest?
+
     @album = Album.new
   end
 
   # GET /albums/1/edit
   def edit
+    redirect_to albums_path and return if current_user.is_guest?
+
   end
 
   # POST /albums
   # POST /albums.json
   def create
+    redirect_to albums_path and return if current_user.is_guest?
+
     @album = Album.new(album_params)
     @album.owner = current_user
 
@@ -46,6 +56,8 @@ class AlbumsController < ApplicationController
   # PATCH/PUT /albums/1
   # PATCH/PUT /albums/1.json
   def update
+    redirect_to albums_path and return if current_user.is_guest? or (current_user.is_user? and not current_user.eql?(@album.owner))
+
     respond_to do |format|
       if @album.update(album_params)
         format.html { redirect_to @album, notice: 'Album was successfully updated.' }
@@ -60,6 +72,8 @@ class AlbumsController < ApplicationController
   # DELETE /albums/1
   # DELETE /albums/1.json
   def destroy
+    redirect_to albums_path and return if current_user.is_guest? or (current_user.is_user? and not current_user.eql?(@album.owner))
+
     @album.destroy
     respond_to do |format|
       format.html { redirect_to albums_url, notice: 'Album was successfully destroyed.' }
