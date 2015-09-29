@@ -1,5 +1,6 @@
 class MultimediaFilesController < ApplicationController
 
+  before_action :authenticate_user!
   before_action :check_type, except: [:index]
   before_action :set_multimedia_file, only: [:show, :edit, :update, :destroy]
   before_action :set_albums, only: [:new, :edit, :update, :create]
