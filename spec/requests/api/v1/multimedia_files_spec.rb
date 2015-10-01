@@ -16,6 +16,7 @@ describe "Api MultimediaFiles", type: :request do
   after :each do
     Album.destroy_all
     MultimediaFile::Video.destroy_all
+    MultimediaFile::Image.destroy_all
   end
 
   describe "GET /api/v1/multimedia_files" do
@@ -86,7 +87,7 @@ describe "Api MultimediaFiles", type: :request do
       expect(response).to have_http_status(422)
       expect(response.body).to eq({error: "Unprocessable entity", status: 422}.to_json)
       post api_multimedia_files_path(type: 'video'), make_http_params_from(multimedia_file), auth_headers_for(@user)
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(201)
       expect(@user.multimedia_files.count).to eq(1)
     end
 
@@ -103,8 +104,16 @@ describe "Api MultimediaFiles", type: :request do
       album = FactoryGirl.create :album, owner_id: @admin.id
       multimedia_file = FactoryGirl.build :multimedia_file_video, album_id: album.id
       post api_multimedia_files_path(type: 'video'), make_http_params_from(multimedia_file), auth_headers_for(@admin)
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(201)
       expect(@admin.multimedia_files.count).to eq(1)
+    end
+
+    it "Create image" do
+      album = FactoryGirl.create :album, owner_id: @user.id
+      multimedia_file = FactoryGirl.build :multimedia_file_image, album_id: album.id
+      post api_multimedia_files_path(type: 'image'), make_http_params_from(multimedia_file), auth_headers_for(@user)
+      expect(response).to have_http_status(201)
+      expect(@user.multimedia_files.count).to eq(1)
     end
 
   end
@@ -137,6 +146,17 @@ describe "Api MultimediaFiles", type: :request do
       expect(response).to have_http_status(200)
       multimedia_file.reload
       expect(multimedia_file.title).to eq("My new title")
+    end
+
+    it "Edit image" do
+      album = FactoryGirl.create :album, owner_id: @user.id
+      multimedia_file = FactoryGirl.create :multimedia_file_image, album_id: album.id, owner_id: @user.id
+      old_attachment_url = multimedia_file.attachment.url(:original, false)
+      patch api_multimedia_file_path(multimedia_file, type: 'image'), {multimedia_file_image: {title: "My new title"}}, auth_headers_for(@user)
+      expect(response).to have_http_status(200)
+      multimedia_file.reload
+      expect(multimedia_file.title).to eq("My new title")
+      expect(multimedia_file.attachment.url(:original, false)).to eq(old_attachment_url)
     end
 
   end
