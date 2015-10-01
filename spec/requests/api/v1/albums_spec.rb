@@ -57,23 +57,23 @@ describe "Api Albums", type: :request do
       album = FactoryGirl.build :album
       post api_albums_path, make_http_params_from(album), auth_headers_for(@guest)
       expect(response).to have_http_status(401)
-      expect(response.body).to eq({error: "Unauthorized", status: 401}.to_json)
+      expect(JSON::parse(response.body)).to include_json({error: "Unauthorized", status: 401})
     end
 
     it "Ensure user can create albums" do
       album = FactoryGirl.build :album
       post api_albums_path, make_http_params_from(album), auth_headers_for(@user)
       expect(response).to have_http_status(200)
-      hash = Album.last.attributes.reject{|k,v| k.eql?"owner_id"}.merge({"owner" => @user.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}}).to_json
-      expect(response.body).to eq(hash)
+      hash = Album.last.attributes.reject{|k,v| ["owner_id","created_at", "updated_at"].include?(k)}.merge({"owner" => @user.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}})
+      expect(JSON::parse(response.body)).to include_json(hash)
     end
 
     it "Ensure admin can create albums" do
       album = FactoryGirl.build :album
       post api_albums_path, make_http_params_from(album), auth_headers_for(@admin)
       expect(response).to have_http_status(200)
-      hash = Album.last.attributes.reject{|k,v| k.eql?"owner_id"}.merge({"owner" => @admin.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}}).to_json
-      expect(response.body).to eq(hash)
+      hash = Album.last.attributes.reject{|k,v| ["owner_id","created_at", "updated_at"].include?(k)}.merge({"owner" => @admin.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}})
+      expect(JSON::parse(response.body)).to include_json(hash)
     end
 
   end
@@ -92,8 +92,8 @@ describe "Api Albums", type: :request do
       expect(response).to have_http_status(200)
       album.reload
       expect(album.title).to eq("My new title")
-      hash = Album.last.attributes.reject{|k,v| k.eql?"owner_id"}.merge({"owner" => @user.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}}).to_json
-      expect(response.body).to eq(hash)
+      hash = Album.last.attributes.reject{|k,v| ["owner_id","created_at", "updated_at"].include?(k)}.merge({"owner" => @user.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}})
+      expect(JSON::parse(response.body)).to include_json(hash)
     end
   end
 
@@ -111,8 +111,8 @@ describe "Api Albums", type: :request do
       expect(response).to have_http_status(200)
       album.reload
       expect(album.title).to eq("My new title")
-      hash = Album.last.attributes.reject{|k,v| k.eql?"owner_id"}.merge({"owner" => @user.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}}).to_json
-      expect(response.body).to eq(hash)
+      hash = Album.last.attributes.reject{|k,v| ["owner_id","created_at", "updated_at"].include?(k)}.merge({"owner" => @user.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}})
+      expect(JSON::parse(response.body)).to include_json(hash)
     end
 
     it "Ensure admin can modify all albums" do
@@ -121,8 +121,8 @@ describe "Api Albums", type: :request do
       expect(response).to have_http_status(200)
       album.reload
       expect(album.title).to eq("My new title")
-      hash = Album.last.attributes.reject{|k,v| k.eql?"owner_id"}.merge({"owner" => @user.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}}).to_json
-      expect(response.body).to eq(hash)
+      hash = Album.last.attributes.reject{|k,v| ["owner_id","created_at", "updated_at"].include?(k)}.merge({"owner" => @user.attributes.keep_if{|k,v| ['id', 'name', 'surname', 'email'].include?(k)}})
+      expect(JSON::parse(response.body)).to include_json(hash)
     end
 
   end
