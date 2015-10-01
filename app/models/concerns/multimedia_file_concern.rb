@@ -1,7 +1,7 @@
 module MultimediaFileConcern
   extend ActiveSupport::Concern
 
-  MUTIMEDIA_FILE_CLASSES = ['Video']
+  MUTIMEDIA_FILE_CLASSES = ['Video', 'Image']
 
   included do
     MultimediaFileConcern::MUTIMEDIA_FILE_CLASSES.each do |k|

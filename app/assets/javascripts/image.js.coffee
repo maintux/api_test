@@ -146,6 +146,18 @@ $ ->
         form = $el.find('.media-select-uploader-form')
         form.find('input, select, textarea').each ->
           $(@).prop 'disabled', false
+        document.location.href = "/multimedia_files"
 
   if $('#media-upload-photo').length > 0
     MultimediaFile.uploader.init()
+
+  if $('body').data('controller') == 'multimedia_files_controller' and $('body').data('action') == 'index'
+    $('.multimedia-file-overlay').on 'click', ->
+      image = $(@).prev('.image-thumb')
+      if image.length > 0
+        $("#show-multimedia-file-dialog-label").text image.data('title')
+        $("#show-multimedia-file-dialog .modal-body").html "<img src='#{image.data('url')}' style='max-width: 550px; margin: 0 auto;' />"
+        $('a[data-target="#show-multimedia-file-dialog"]').trigger 'click'
+        $('#show-multimedia-file-dialog button.close').click ->
+          $("#show-multimedia-file-dialog .modal-body").html ""
+          $("#show-multimedia-file-dialog-label").text ""

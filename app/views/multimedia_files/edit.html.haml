@@ -1,3 +1,6 @@
 .page-header
   %h1 Edit Multimedia File
-= render :partial => "multimedia_files/forms/#{params[:type]}"
+- if params[:type].eql?"image"
+  = render :partial => "multimedia_files/forms/#{params[:type]}_edit"
+- else
+  = render :partial => "multimedia_files/forms/#{params[:type]}"

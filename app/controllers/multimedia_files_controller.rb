@@ -46,19 +46,24 @@ class MultimediaFilesController < ApplicationController
   # POST /multimedia_files
   # POST /multimedia_files.json
   def create
-    if params[:type].eql? 'image'
-      sleep 2
-      head 204 and return
-    end
     redirect_to multimedia_files_path and return if current_user.is_guest?
 
     @multimedia_file = @klass.new(multimedia_file_params)
+    if params[:type].eql? 'image' and @multimedia_file.title.blank?
+      @multimedia_file.title = params[:multimedia_file_image][:attachment].original_filename
+    end
     @multimedia_file.owner = current_user
 
     respond_to do |format|
       if @multimedia_file.save
         format.html { redirect_to album_path(@multimedia_file.album), notice: 'MultimediaFile was successfully created.' }
-        format.json { render :show, status: :created }
+        format.json {
+          if params[:type].eql? 'image'
+            head 204
+          else
+            render :show, status: :created
+          end
+        }
       else
         format.html { render :new }
         format.json { render json: @multimedia_file.errors, status: :unprocessable_entity }
@@ -112,7 +117,7 @@ class MultimediaFilesController < ApplicationController
       if params[:type].eql?"video"
         params.require(:multimedia_file_video).permit(:title, :description, :provider, :url, :album_id)
       else
-        {}
+        params.require(:multimedia_file_image).permit(:title, :description, :attachment, :album_id)
       end
     end
 

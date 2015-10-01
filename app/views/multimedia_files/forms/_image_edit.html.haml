@@ -1,0 +1,38 @@
+- _url = @multimedia_file.persisted? ? multimedia_file_path(@multimedia_file) : multimedia_files_path
+= form_for @multimedia_file, url: _url, html: { class: "form form-horizontal image" } do |f|
+  = hidden_field_tag :type, @multimedia_file.type
+  .form-group
+    = f.label :title, class: 'control-label'
+    .controls
+      = f.text_field :title, class: 'form-control', required: true
+    - if has_errors?(f.object, :title)
+      %p.text-danger
+        = get_errors_for(f.object, :title)
+  .form-group
+    = f.label :album_id, class: 'control-label'
+    .controls
+      = f.select :album_id, options_for_select(@albums.collect{|a| [a[:title], a[:id]]}, @multimedia_file.album_id), {include_blank: false}, class: 'form-control', required: true
+    - if has_errors?(f.object, :album_id)
+      %p.text-danger
+        = get_errors_for(f.object, :album_id)
+  .form-group
+    = f.label :description, class: 'control-label'
+    .controls
+      = f.text_area :description, class: 'form-control'
+    - if has_errors?(f.object, :description)
+      %p.text-danger
+        = get_errors_for(f.object, :description)
+  .form-group
+    = f.label :attachment, class: 'control-label'
+    .controls
+      = f.file_field :attachment, class: 'form-control', required: true
+    - if has_errors?(f.object, :attachment)
+      %p.text-danger
+        = get_errors_for(f.object, :attachment)
+    .multimedia-files{style: "margin-top: 15px;"}
+      - if @multimedia_file.persisted?
+        .multimedia-file
+          .image-thumb{style: "background-image: url(#{@multimedia_file.attachment.url(:medium)})"}
+
+  = f.submit nil,class: 'btn btn-primary'
+  = link_to t('.cancel', :default => t("helpers.links.cancel")), :back, :class => 'btn btn-default'
