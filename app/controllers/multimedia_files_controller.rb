@@ -94,7 +94,7 @@ class MultimediaFilesController < ApplicationController
 
     @multimedia_file.destroy
     respond_to do |format|
-      format.html { redirect_to multimedia_file_videos_url, notice: 'MultimediaFile was successfully destroyed.' }
+      format.html { redirect_to multimedia_files_url, notice: 'MultimediaFile was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

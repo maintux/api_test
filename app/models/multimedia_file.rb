@@ -2,11 +2,12 @@ class MultimediaFile < ActiveRecord::Base
   self.abstract_class = true
   self.table_name_prefix = "multimedia_file_"
 
-  validates_presence_of :title, :owner_id, :album_id
-  validate :album_owner
-
   belongs_to :owner, class_name: "User"
   belongs_to :album
+
+  validates_presence_of :title, :owner, :album
+  validate :album_owner
+
 
   protected
     def album_owner
