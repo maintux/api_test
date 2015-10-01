@@ -4,7 +4,11 @@ class Api::V1::AlbumsController < Api::V1::BaseController
   respond_to :json
 
   def index
-    @albums = Album.all
+    if params[:owner_id] and owner = User.find_by_id(params[:owner_id])
+      @albums = paginate owner.albums, per_page: 10
+    else
+      @albums = paginate Album.all, per_page: 10
+    end
   end
 
   def show

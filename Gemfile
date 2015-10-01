@@ -13,10 +13,13 @@ gem 'twitter-bootstrap-rails'
 gem 'haml-rails'
 gem 'devise'
 gem 'paperclip'
+gem 'kaminari'
+gem 'api-pagination'
 
 group :development, :test do
   gem 'database_cleaner'
   gem 'rspec-rails'
+  gem 'rspec-json_expectations'
   gem 'factory_girl'
   gem 'factory_girl_rails'
   gem 'mocha', require: false
